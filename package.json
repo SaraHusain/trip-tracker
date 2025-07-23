@@ -1,5 +1,5 @@
 {
-  "name": "trip-trackr",
+  "name": "trip-tracker",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -19,9 +19,11 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "build": "react-scripts build && npm run copy:build",
+    "copy:build": "rm -rf mobile/www/* && cp -R build/* mobile/www/",
+    "cordova:build": "cd mobile && cordova build",
+    "cordova:run:android": "cd mobile && cordova run android",
+    "cordova:run:ios": "cd mobile && cordova run ios"
   },
   "eslintConfig": {
     "extends": [

@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { HabitsContext } from '../context/HabitsContext';
+import HeatmapCalendar from '../components/HeatmapCalendar';
 
 const Habits: React.FC = () => {
     const { habits, addHabit, toggleHabit } = useContext(HabitsContext);
@@ -45,6 +46,14 @@ const Habits: React.FC = () => {
                     </li>
                 ))}
             </ul>
+
+            {/* Habits Calendar Heatmap */}
+            {habits.map(h => (
+                <div key={h.id} style={{ marginTop: '2rem' }}>
+                    <h3>{h.name} Heatmap</h3>
+                    <HeatmapCalendar habits={habits} habitId={h.id} />
+                </div>
+            ))}
         </div>
     );
 };

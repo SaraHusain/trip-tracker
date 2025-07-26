@@ -5,6 +5,8 @@ import NewEntry from './pages/NewEntry';
 import Habits from './pages/Habits';
 import Journal from './pages/Journal';
 import Settings from './pages/Settings';
+import Success from './pages/Success';
+import Fail from './pages/Fail';
 
 const App: React.FC = () => (
 	<HashRouter>
@@ -19,6 +21,8 @@ const App: React.FC = () => (
 			<Route path="/habits" element={<Habits />} />
 			<Route path="/journal" element={<Journal />} />
 			<Route path="/settings" element={<Settings />} />
+			<Route path="/success" element={<Success />} />
+			<Route path="/fail" element={<Fail />} />
 		</Routes>
 	</HashRouter>
 );

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { EntriesContext } from '../context/EntriesContext';
+import { useNavigate } from 'react-router-dom';
 
 const NewEntry: React.FC = () => {
     const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
@@ -7,6 +8,8 @@ const NewEntry: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
 
     const { addEntry } = useContext(EntriesContext);
+
+    const navigate = useNavigate();
 
     // 1. Geolocation
     const getLocation = () => {
@@ -55,13 +58,13 @@ const NewEntry: React.FC = () => {
     const saveEntry = () => {
         if (photoUri && location) {
             addEntry({ photoUri, location });
+            navigate('/success');
         }
     };
     
     useEffect(() => {
         getLocation();
     }, []);
-
 
     return (
         <div style={{ padding: '1rem' }}>
@@ -77,7 +80,7 @@ const NewEntry: React.FC = () => {
             {location && (
                 <p>Location: {location.lat.toFixed(5)}, {location.lng.toFixed(5)}</p>
             )}
-            <button onClick={saveEntry} style={{ marginTop: '1rem' }}>Save Entry</button>
+            {(photoUri || location) && <button onClick={saveEntry} style={{ marginTop: '1rem' }}>Save Entry</button>}
         </div>
     );
 };

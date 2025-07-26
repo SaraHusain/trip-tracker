@@ -10,7 +10,8 @@ const App: React.FC = () => (
 	<HashRouter>
 		<nav style={{ padding: '1rem', borderBottom: '1px solid #ddd' }}>
 			<Link to="/" style={{ marginRight: '1rem' }}>Dashboard</Link>
-			<Link to="/new">New Entry</Link>
+			<Link to="/new" style={{ marginRight: '1rem' }}>New Entry</Link>
+			<Link to="/journal" style={{ marginRight: '1rem' }}>Journal</Link>
 		</nav>
 		<Routes>
 			<Route path="/" element={<Dashboard />} />

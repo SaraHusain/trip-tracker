@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { HabitsContext } from '../context/HabitsContext';
 import HeatmapCalendar from '../components/HeatmapCalendar';
+import StreakChart from '../components/StreakChart';
 
 const Habits: React.FC = () => {
     const { habits, addHabit, toggleHabit } = useContext(HabitsContext);
@@ -52,6 +53,8 @@ const Habits: React.FC = () => {
                 <div key={h.id} style={{ marginTop: '2rem' }}>
                     <h3>{h.name} Heatmap</h3>
                     <HeatmapCalendar habits={habits} habitId={h.id} />
+                    <h3>{h.name} Streak (Last 30 days)</h3>
+                    <StreakChart habit={h} />
                 </div>
             ))}
         </div>

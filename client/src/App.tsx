@@ -14,6 +14,7 @@ const App: React.FC = () => (
 			<Link to="/" style={{ marginRight: '1rem' }}>Dashboard</Link>
 			<Link to="/new" style={{ marginRight: '1rem' }}>New Entry</Link>
 			<Link to="/journal" style={{ marginRight: '1rem' }}>Journal</Link>
+			<Link to="/habits" style={{ marginRight: '1rem' }}>Habits</Link>
 		</nav>
 		<Routes>
 			<Route path="/" element={<Dashboard />} />

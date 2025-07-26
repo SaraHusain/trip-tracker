@@ -5,6 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'leaflet/dist/leaflet.css';
 import { EntriesProvider } from './context/EntriesContext';
+import { HabitsProvider } from './context/HabitsContext';
 
 const root = ReactDOM.createRoot(
 	document.getElementById('root') as HTMLElement
@@ -12,7 +13,9 @@ const root = ReactDOM.createRoot(
 root.render(
 	<React.StrictMode>
 		<EntriesProvider>
-			<App />
+			<HabitsProvider>
+				<App />
+			</HabitsProvider>
 		</EntriesProvider>
 	</React.StrictMode>
 );

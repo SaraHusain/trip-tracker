@@ -1,45 +1,51 @@
 import React, { useState, useEffect } from 'react';
 
-// Extend the Navigator interface to include the camera property
-declare global {
-    interface Navigator {
-        camera: any;
-    }
-}
-
 const NewEntry: React.FC = () => {
-    const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
-    const [photoUri, setPhotoUri] = useState<string | null>(null);
-    const [error, setError] = useState<string | null>(null);
+  const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [photoUri, setPhotoUri] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-    // 1. Geolocation
-    const getLocation = () => {
-        if (!navigator.geolocation) {
-            setError('Geolocation not supported');
-            return;
-        }
-        navigator.geolocation.getCurrentPosition(
-            pos => {
-                setLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-            },
-            err => setError(err.message),
-            { enableHighAccuracy: true }
-        );
-    };
+  // 1. Geolocation
+  const getLocation = () => {
+    if (!navigator.geolocation) {
+      setError('Geolocation not supported');
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      pos => setLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+      err => setError(err.message),
+      { enableHighAccuracy: true }
+    );
+  };
 
-    // 2. Camera capture (Cordova plugin)
+    // 2. Camera capture (Cordova plugin or HTML fallback)
     const takePhoto = () => {
-        // @ts-ignore: cordova-plugin-camera typings
-        navigator.camera.getPicture(
-            (uri: string) => setPhotoUri(uri),
-            (err: any) => setError(err),
-            {
-                quality: 80,
-                destinationType: (navigator.camera as any).DestinationType.FILE_URI,
-                sourceType: (navigator.camera as any).PictureSourceType.CAMERA,
-                correctOrientation: true
-            }
-        );
+        if ((window as any).cordova && (navigator as any).camera) {
+            // Cordova environment
+            (navigator as any).camera.getPicture(
+                (uri: string) => setPhotoUri(uri),
+                (err: any) => setError(err),
+                {
+                    quality: 80,
+                    destinationType: (navigator as any).camera.DestinationType.FILE_URI,
+                    sourceType: (navigator as any).camera.PictureSourceType.CAMERA,
+                    correctOrientation: true
+                }
+            );
+        } else {
+            // Web fallback: file input
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = e => {
+                const file = (e.target as any).files[0];
+                if (file) {
+                    const url = URL.createObjectURL(file);
+                    setPhotoUri(url);
+                }
+            };
+            input.click();
+        }
     };
 
     useEffect(() => {

@@ -1,22 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { EntriesContext } from '../context/EntriesContext';
 
 const NewEntry: React.FC = () => {
-  const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const [photoUri, setPhotoUri] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+    const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
+    const [photoUri, setPhotoUri] = useState<string | null>(null);
+    const [error, setError] = useState<string | null>(null);
 
-  // 1. Geolocation
-  const getLocation = () => {
-    if (!navigator.geolocation) {
-      setError('Geolocation not supported');
-      return;
-    }
-    navigator.geolocation.getCurrentPosition(
-      pos => setLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-      err => setError(err.message),
-      { enableHighAccuracy: true }
-    );
-  };
+    const { addEntry } = useContext(EntriesContext);
+
+    // 1. Geolocation
+    const getLocation = () => {
+        if (!navigator.geolocation) {
+            setError('Geolocation not supported');
+            return;
+        }
+        navigator.geolocation.getCurrentPosition(
+            pos => setLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+            err => setError(err.message),
+            { enableHighAccuracy: true }
+        );
+    };
 
     // 2. Camera capture (Cordova plugin or HTML fallback)
     const takePhoto = () => {
@@ -47,10 +50,18 @@ const NewEntry: React.FC = () => {
             input.click();
         }
     };
-
+    
+    // 3. Save the photo
+    const saveEntry = () => {
+        if (photoUri && location) {
+            addEntry({ photoUri, location });
+        }
+    };
+    
     useEffect(() => {
         getLocation();
     }, []);
+
 
     return (
         <div style={{ padding: '1rem' }}>
@@ -66,7 +77,7 @@ const NewEntry: React.FC = () => {
             {location && (
                 <p>Location: {location.lat.toFixed(5)}, {location.lng.toFixed(5)}</p>
             )}
-            {/* TODO: Save entry button to persist entry to local store or backend */}
+            <button onClick={saveEntry} style={{ marginTop: '1rem' }}>Save Entry</button>
         </div>
     );
 };

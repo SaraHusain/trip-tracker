@@ -17,29 +17,32 @@ export const EntriesContext = createContext<EntriesContextType>({
 	addEntry: () => {}
 });
 
-const STORAGE_KEY = 'triptracker_entries';
+const API_URL = process.env.REACT_APP_API_URL!;
 
 export const EntriesProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
 	const [entries, setEntries] = useState<Entry[]>([]);
 
-	// Load from localStorage on mount
+	// 1) Fetch existing entries from backend
 	useEffect(() => {
-		const data = localStorage.getItem(STORAGE_KEY);
-		if (data) setEntries(JSON.parse(data));
+		fetch(`${API_URL}/entries`)
+		.then(res => res.json())
+		.then((data: Entry[]) => setEntries(data))
+		.catch(console.error);
 	}, []);
 
-	// Persist to localStorage on change
-	useEffect(() => {
-		localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
-	}, [entries]);
-
-	const addEntry = (e: Omit<Entry, 'id' | 'timestamp'>) => {
-		const newEntry: Entry = {
-			id: Math.random().toString(36).substr(2, 9),
-			timestamp: Date.now(),
-			...e
-		};
-		setEntries(prev => [newEntry, ...prev]);
+	// 2) addEntry posts to backend then updates state
+	const addEntry = async (e: Omit<Entry, 'id' | 'timestamp'>) => {
+		try {
+			const res = await fetch(`${API_URL}/entries`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(e)
+			});
+			const saved: Entry = await res.json();
+			setEntries(prev => [saved, ...prev]);
+		} catch (err) {
+			console.error(err);
+		}
 	};
 
 	return (

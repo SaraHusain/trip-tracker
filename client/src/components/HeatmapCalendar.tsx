@@ -4,15 +4,23 @@ import 'react-calendar-heatmap/dist/styles.css';
 import { Habit } from '../context/HabitsContext';
 
 interface HeatmapProps {
-    habits: Habit[];
+    habits?: Habit[];
     habitId: string;
 }
 
-const HeatmapCalendar: React.FC<HeatmapProps> = ({ habits, habitId }) => {
-    const habit = habits.find(h => h.id === habitId);
+const HeatmapCalendar: React.FC<HeatmapProps> = ({ habits = [], habitId }) => {
+    const habit = habits.find(h => h._id === habitId);
     if (!habit) return null;
 
-    const values = habit.completedDates.map(dateStr => ({ date: dateStr, count: 1 }));
+    // Ensure completedDates is always an array
+    const datesArray = Array.isArray(habit.completedDates)
+        ? habit.completedDates
+        : [];
+
+    const values = datesArray.map(dateStr => ({
+        date: dateStr,
+        count: 1
+    }));
 
     return (
         <CalendarHeatmap

@@ -9,18 +9,24 @@ interface StreakChartProps {
 }
 
 const StreakChart: React.FC<StreakChartProps> = ({ habit, days = 30 }) => {
+    const datesArray = Array.isArray(habit.completedDates)
+        ? habit.completedDates
+        : [];
+
     const data = useMemo(() => {
         const arr: Array<{ date: string; streak: number }> = [];
         let streak = 0;
+
         for (let i = days - 1; i >= 0; i--) {
-            const date = subDays(new Date(), i);
-            const dateStr = format(date, 'yyyy-MM-dd');
-            if (habit.completedDates.includes(dateStr)) streak += 1;
+            const dateObj = subDays(new Date(), i);
+            const dateStr = format(dateObj, 'yyyy-MM-dd');
+            // use our safe array
+            if (datesArray.includes(dateStr)) streak += 1;
             else streak = 0;
-            arr.push({ date: format(date, 'MM/dd'), streak });
+            arr.push({ date: format(dateObj, 'MM/dd'), streak });
         }
         return arr;
-    }, [habit, days]);
+    }, [datesArray, days]);
 
     return (
         <ResponsiveContainer width="100%" height={200}>

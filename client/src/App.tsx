@@ -9,6 +9,9 @@ import Success from './pages/Success';
 import Fail from './pages/Fail';
 import Heatmap from './pages/Heatmap';
 import Chart from './pages/Chart';
+import Signup from './pages/Signup';
+import Login from './pages/Login';
+import { PrivateRoute } from './components/PrivateRoute';
 
 const App: React.FC = () => (
 	<HashRouter>
@@ -21,15 +24,17 @@ const App: React.FC = () => (
 			<Link to="/chart" style={{ marginRight: '1rem' }}>Streak Chart</Link>
 		</nav>
 		<Routes>
-			<Route path="/" element={<Dashboard />} />
-			<Route path="/new" element={<NewEntry />} />
-			<Route path="/habits" element={<Habits />} />
-			<Route path="/journal" element={<Journal />} />
-			<Route path="/settings" element={<Settings />} />
-			<Route path="/success" element={<Success />} />
-			<Route path="/fail" element={<Fail />} />
-			<Route path="/heatmap" element={<Heatmap />} />
-			<Route path="/chart" element={<Chart />} />
+			<Route path="/signup" element={<Signup />} />
+			<Route path="/login" element={<Login />} />
+			<Route path="/" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+			<Route path="/new" element={<PrivateRoute><NewEntry /></PrivateRoute>} />
+			<Route path="/habits" element={<PrivateRoute><Habits /></PrivateRoute>} />
+			<Route path="/journal" element={<PrivateRoute><Journal /></PrivateRoute>} />
+			<Route path="/settings" element={<PrivateRoute><Settings /></PrivateRoute>} />
+			<Route path="/success" element={<PrivateRoute><Success /></PrivateRoute>} />
+			<Route path="/fail" element={<PrivateRoute><Fail /></PrivateRoute>} />
+			<Route path="/heatmap" element={<PrivateRoute><Heatmap /></PrivateRoute>} />
+			<Route path="/chart" element={<PrivateRoute><Chart /></PrivateRoute>} />
 		</Routes>
 	</HashRouter>
 );

@@ -19,13 +19,16 @@ export const HabitsContext = createContext<HabitsContextType>({
 });
 
 const API_URL = process.env.REACT_APP_API_URL!;
+const token = localStorage.getItem('tt_token');
 
 export const HabitsProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
     const [habits, setHabits] = useState<Habit[]>([]);
 
     // Load habits from server
     useEffect(() => {
-        fetch(`${API_URL}/habits`)
+        fetch(`${API_URL}/habits`, {
+			headers: { Authorization: `Bearer ${token}` }
+		})
             .then(r => r.json())
             .then((data: Habit[]) => {
                 const normalized = data.map(h => ({
@@ -42,7 +45,7 @@ export const HabitsProvider: React.FC<React.PropsWithChildren<{}>> = ({ children
         try {
             const res = await fetch(`${API_URL}/habits`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { Authorization: `Bearer ${token}` },
                 body: JSON.stringify({ name })
             });
             const saved: Habit = await res.json();
@@ -72,7 +75,7 @@ export const HabitsProvider: React.FC<React.PropsWithChildren<{}>> = ({ children
         try {
             await fetch(`${API_URL}/habits/${_id}/toggle`, {
                 method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { Authorization: `Bearer ${token}` },
                 body: JSON.stringify({ date })
             });
         } catch (err) {

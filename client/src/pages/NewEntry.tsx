@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { EntriesContext } from '../context/EntriesContext';
+import { EntriesContext, NewEntryPayload } from '../context/EntriesContext';
 import { useNavigate } from 'react-router-dom';
 
 const NewEntry: React.FC = () => {
     const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
     const [photoUri, setPhotoUri] = useState<string | null>(null);
+    const [photoFile, setPhotoFile] = useState<File | null>(null);
     const [error, setError] = useState<string | null>(null);
 
     const { addEntry } = useContext(EntriesContext);
-
     const navigate = useNavigate();
 
     // 1. Geolocation
@@ -24,12 +24,17 @@ const NewEntry: React.FC = () => {
         );
     };
 
-    // 2. Camera capture (Cordova plugin or HTML fallback)
+    // 2. Camera / file capture
     const takePhoto = () => {
         if ((window as any).cordova && (navigator as any).camera) {
-            // Cordova environment
             (navigator as any).camera.getPicture(
-                (uri: string) => setPhotoUri(uri),
+                async (uri: string) => {
+                    setPhotoUri(uri);
+                    // Fetch blob from the file URI and turn into a File
+                    const blob = await fetch(uri).then(r => r.blob());
+                    const file = new File([blob], `entry_${Date.now()}.jpg`, { type: blob.type });
+                    setPhotoFile(file);
+                },
                 (err: any) => setError(err),
                 {
                     quality: 80,
@@ -39,48 +44,56 @@ const NewEntry: React.FC = () => {
                 }
             );
         } else {
-            // Web fallback: file input
+            // Web fallback
             const input = document.createElement('input');
             input.type = 'file';
             input.accept = 'image/*';
             input.onchange = e => {
-                const file = (e.target as any).files[0];
+                const file = (e.target as HTMLInputElement).files![0];
                 if (file) {
-                    const url = URL.createObjectURL(file);
-                    setPhotoUri(url);
+                    setPhotoFile(file);
+                    setPhotoUri(URL.createObjectURL(file));
                 }
             };
             input.click();
         }
     };
-    
-    // 3. Save the photo
-    const saveEntry = () => {
-        if (photoUri && location) {
-            addEntry({ photoUri, location });
+
+    // 3. Save — now pass in the File
+    const saveEntry = async () => {
+        if (photoFile && location) {
+            await addEntry({ file: photoFile, location } as NewEntryPayload);
             navigate('/success');
         }
     };
-    
-    useEffect(() => {
-        getLocation();
-    }, []);
+
+    useEffect(getLocation, []);
 
     return (
         <div style={{ padding: '1rem' }}>
             <h1>New Entry</h1>
             {error && <p style={{ color: 'red' }}>{error}</p>}
+
             <button onClick={takePhoto}>Take Photo</button>
+
             {photoUri && (
                 <div>
                     <h3>Preview:</h3>
-                    <img src={photoUri} alt="Entry" style={{ maxWidth: '100%', marginTop: '1rem' }} />
+                    <img
+                        src={photoUri}
+                        alt="Entry preview"
+                        style={{ maxWidth: '100%', marginTop: '1rem' }}
+                    />
                 </div>
             )}
+
             {location && (
                 <p>Location: {location.lat.toFixed(5)}, {location.lng.toFixed(5)}</p>
             )}
-            {(photoUri || location) && <button onClick={saveEntry} style={{ marginTop: '1rem' }}>Save Entry</button>}
+
+            {photoFile && location && (
+                <button onClick={saveEntry} style={{ marginTop: '1rem' }}>Save Entry</button>
+            )}
         </div>
     );
 };

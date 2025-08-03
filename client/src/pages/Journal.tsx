@@ -2,6 +2,8 @@ import React, { useContext, useState, useMemo } from 'react';
 import { EntriesContext, Entry } from '../context/EntriesContext';
 import MapView from '../components/MapView';
 
+const PHOTO_URL = process.env.REACT_APP_PHOTO_URL;
+
 const Journal: React.FC = () => {
     const { entries } = useContext(EntriesContext);
     const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
@@ -45,12 +47,12 @@ const Journal: React.FC = () => {
             ) : (
                 <ul style={{ listStyle: 'none', padding: 0 }}>
                     {filtered.map((entry: Entry) => (
-                        <li key={entry.id} style={{ marginBottom: '1.5rem', borderBottom: '1px solid #ddd', paddingBottom: '1rem' }}>
+                        <li key={entry._id} style={{ marginBottom: '1.5rem', borderBottom: '1px solid #ddd', paddingBottom: '1rem' }}>
                             <p style={{ margin: 0, fontSize: '0.9rem', color: '#555' }}>
                                 {new Date(entry.timestamp).toLocaleString()}
                             </p>
                             <img
-                                src={entry.photoUri}
+                                src={PHOTO_URL + entry.photoUri}
                                 alt="Journal entry"
                                 style={{ width: '100%', maxHeight: '300px', objectFit: 'cover', marginTop: '0.5rem', borderRadius: '8px' }}
                             />

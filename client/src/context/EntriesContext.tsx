@@ -1,48 +1,69 @@
 import React, { createContext, useState, useEffect } from 'react';
 
 export interface Entry {
-	id: string;
+	_id: string;
+	userId: string;
 	photoUri: string;
 	location: { lat: number; lng: number };
 	timestamp: number;
 }
 
+export interface NewEntryPayload {
+	file: File;
+	location: { lat: number; lng: number };
+}
+
 interface EntriesContextType {
 	entries: Entry[];
-	addEntry: (entry: Omit<Entry, 'id' | 'timestamp'>) => void;
+	addEntry: (payload: NewEntryPayload) => Promise<void>;
 }
 
 export const EntriesContext = createContext<EntriesContextType>({
 	entries: [],
-	addEntry: () => {}
+	addEntry: async () => {}
 });
 
-const API_URL = process.env.REACT_APP_API_URL!;
+const API_URL = process.env.REACT_APP_API_URL;
+const token = localStorage.getItem('tt_token');
 
 export const EntriesProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
 	const [entries, setEntries] = useState<Entry[]>([]);
 
-	// 1) Fetch existing entries from backend
 	useEffect(() => {
-		fetch(`${API_URL}/entries`)
-		.then(res => res.json())
-		.then((data: Entry[]) => setEntries(data))
-		.catch(console.error);
+		fetch(`${API_URL}/entries`, {
+			headers: { Authorization: `Bearer ${token}` }
+		})
+			.then(res => res.json())
+			.then((data) => {
+				console.log(data);
+				
+				if (Array.isArray(data)) {
+					setEntries(data);
+				} else {
+					console.error('Expected array but got:', data);
+					setEntries([]);
+				}
+			})
+			.catch(err => {
+				console.error(err);
+				setEntries([]);
+			});
 	}, []);
 
-	// 2) addEntry posts to backend then updates state
-	const addEntry = async (e: Omit<Entry, 'id' | 'timestamp'>) => {
-		try {
-			const res = await fetch(`${API_URL}/entries`, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(e)
-			});
-			const saved: Entry = await res.json();
-			setEntries(prev => [saved, ...prev]);
-		} catch (err) {
-			console.error(err);
-		}
+	const addEntry = async ({ file, location }: NewEntryPayload) => {
+		const form = new FormData();
+		form.append('photo', file);
+		form.append('lat', String(location.lat));
+		form.append('lng', String(location.lng));
+
+		const res = await fetch(`${API_URL}/entries`, {
+			method: 'POST',
+			headers: { Authorization: `Bearer ${token}` },
+			body: form
+		});
+		if (!res.ok) throw new Error(res.statusText);
+		const saved: Entry = await res.json();
+		setEntries(prev => [saved, ...prev]);
 	};
 
 	return (

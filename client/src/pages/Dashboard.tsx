@@ -9,11 +9,13 @@ const Dashboard: React.FC = () => {
     const today = new Date().toISOString().split('T')[0];
 
      // Map markers from entries
-    const markers = entries.map(e => ({
-        lat: e.location.lat,
-        lng: e.location.lng,
-        popup: new Date(e.timestamp).toLocaleString()
-    }));
+    const markers = Array.isArray(entries)
+        ? entries.map(e => ({
+            lat: e.location.lat,
+            lng: e.location.lng,
+            popup: new Date(e.timestamp).toLocaleString()
+        }))
+        : [];
 
     // Count completed vs total for today
     const totalHabits = habits.length;

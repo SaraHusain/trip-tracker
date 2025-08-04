@@ -16,11 +16,13 @@ export interface NewEntryPayload {
 interface EntriesContextType {
 	entries: Entry[];
 	addEntry: (payload: NewEntryPayload) => Promise<void>;
+	deleteEntry: (id: string) => Promise<void>;
 }
 
 export const EntriesContext = createContext<EntriesContextType>({
 	entries: [],
-	addEntry: async () => {}
+	addEntry: async () => {},
+	deleteEntry: async () => {}
 });
 
 const API_URL = process.env.REACT_APP_API_URL;
@@ -35,8 +37,6 @@ export const EntriesProvider: React.FC<React.PropsWithChildren<{}>> = ({ childre
 		})
 			.then(res => res.json())
 			.then((data) => {
-				console.log(data);
-				
 				if (Array.isArray(data)) {
 					setEntries(data);
 				} else {
@@ -66,8 +66,20 @@ export const EntriesProvider: React.FC<React.PropsWithChildren<{}>> = ({ childre
 		setEntries(prev => [saved, ...prev]);
 	};
 
+	const deleteEntry = async (id: string) => {
+		const res = await fetch(`${API_URL}/entries/${id}`, {
+			method: 'DELETE',
+			headers: { Authorization: `Bearer ${token}` }
+		});
+		if (res.ok) {
+			setEntries(prev => prev.filter(e => e._id !== id));
+		} else {
+			console.error('Delete failed', await res.json());
+		}
+	};
+
 	return (
-		<EntriesContext.Provider value={{ entries, addEntry }}>
+		<EntriesContext.Provider value={{ entries, addEntry, deleteEntry }}>
 			{children}
 		</EntriesContext.Provider>
 	);

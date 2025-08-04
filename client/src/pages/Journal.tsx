@@ -5,7 +5,7 @@ import MapView from '../components/MapView';
 const PHOTO_URL = process.env.REACT_APP_PHOTO_URL;
 
 const Journal: React.FC = () => {
-    const { entries } = useContext(EntriesContext);
+    const { entries, deleteEntry } = useContext(EntriesContext);
     const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
     const [startDate, setStartDate] = useState<string>('');
     const [endDate, setEndDate] = useState<string>('');
@@ -59,6 +59,12 @@ const Journal: React.FC = () => {
                             <p style={{ marginTop: '0.5rem' }}>
                                 Location: {entry.location.lat.toFixed(5)}, {entry.location.lng.toFixed(5)}
                             </p>
+                            <button
+                                onClick={() => deleteEntry(entry._id)}
+                                style={{ marginLeft: '1rem', color: 'red' }}
+                            >
+                                Delete
+                            </button>
                         </li>
                     ))}
                 </ul>

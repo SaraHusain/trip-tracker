@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getEntries, createEntry } from '../controllers/entriesController';
+import { getEntries, createEntry, deleteEntry } from '../controllers/entriesController';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
@@ -35,5 +35,7 @@ const upload = multer({ storage });
 router.get('/', getEntries);
 // POST /api/entries
 router.post('/', upload.single('photo'), createEntry);
+// DELETE /api/entries/:id
+router.delete('/:id', deleteEntry);
 
 export default router;

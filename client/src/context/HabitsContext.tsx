@@ -45,7 +45,10 @@ export const HabitsProvider: React.FC<React.PropsWithChildren<{}>> = ({ children
         try {
             const res = await fetch(`${API_URL}/habits`, {
                 method: 'POST',
-                headers: { Authorization: `Bearer ${token}` },
+                headers: { 
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json' 
+                },
                 body: JSON.stringify({ name })
             });
             const saved: Habit = await res.json();
@@ -75,7 +78,10 @@ export const HabitsProvider: React.FC<React.PropsWithChildren<{}>> = ({ children
         try {
             await fetch(`${API_URL}/habits/${_id}/toggle`, {
                 method: 'PATCH',
-                headers: { Authorization: `Bearer ${token}` },
+                headers: { 
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify({ date })
             });
         } catch (err) {

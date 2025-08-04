@@ -51,3 +51,21 @@ export const createEntry = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Server Error' });
     }
 };
+
+// Delete an entry
+export const deleteEntry = async (req: Request, res: Response) => {
+    console.log(req);
+    
+  try {
+        const { id } = req.params;
+        // Only delete if it belongs to this user
+        const result = await Entry.deleteOne({ _id: id, userId: req.user?.id });
+        if (result.deletedCount === 0) {
+            return res.status(404).json({ message: 'Not found or not your entry' });
+        }
+        res.status(204).end();
+    } catch (err) {
+        console.error('Error deleting entry:', err);
+        res.status(500).json({ message: 'Server Error' });
+    }
+};

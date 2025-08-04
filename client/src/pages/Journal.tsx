@@ -9,6 +9,8 @@ const Journal: React.FC = () => {
     const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
     const [startDate, setStartDate] = useState<string>('');
     const [endDate, setEndDate] = useState<string>('');
+    const [confirmOpen, setConfirmOpen] = useState(false);
+    const [entryToDelete, setEntryToDelete] = useState<Entry | null>(null);
 
     // Filter entries by date range
     const filtered = useMemo(() => {
@@ -22,6 +24,11 @@ const Journal: React.FC = () => {
 
     // Prepare markers for map view
     const markers = filtered.map(e => ({ lat: e.location.lat, lng: e.location.lng, popup: new Date(e.timestamp).toLocaleString() }));
+
+    const openConfirm = (entry: Entry) => {
+        setEntryToDelete(entry);
+        setConfirmOpen(true);
+    };
 
     return (
         <div style={{ padding: '1rem' }}>
@@ -60,7 +67,7 @@ const Journal: React.FC = () => {
                                 Location: {entry.location.lat.toFixed(5)}, {entry.location.lng.toFixed(5)}
                             </p>
                             <button
-                                onClick={() => deleteEntry(entry._id)}
+                                onClick={() => openConfirm(entry)}
                                 style={{ marginLeft: '1rem', color: 'red' }}
                             >
                                 Delete
@@ -68,6 +75,27 @@ const Journal: React.FC = () => {
                         </li>
                     ))}
                 </ul>
+            )}
+            {/* Confirm Delete Modal */}
+            {confirmOpen && entryToDelete && (
+                <div className="modal-overlay">
+                    <div className="modal">
+                        <h3>Delete this entry?</h3>
+                        <p>This action cannot be undone.</p>
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
+                            <button onClick={() => setConfirmOpen(false)}>Cancel</button>
+                            <button
+                                onClick={() => {
+                                    deleteEntry(entryToDelete._id);
+                                    setConfirmOpen(false);
+                                }}
+                                style={{ backgroundColor: 'red', color: 'white' }}
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
             )}
         </div>
     );

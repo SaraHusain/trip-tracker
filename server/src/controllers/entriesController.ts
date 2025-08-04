@@ -54,8 +54,6 @@ export const createEntry = async (req: Request, res: Response) => {
 
 // Delete an entry
 export const deleteEntry = async (req: Request, res: Response) => {
-    console.log(req);
-    
   try {
         const { id } = req.params;
         // Only delete if it belongs to this user

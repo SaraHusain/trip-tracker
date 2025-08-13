@@ -7,16 +7,18 @@ const Habits: React.FC = () => {
     const today = new Date().toISOString().split('T')[0];
 
     return (
-        <div style={{ padding: '1rem' }}>
+        <div className='main-container'>
             <h1>Habits</h1>
 
             {/* Add New Habit */}
-            <div style={{ marginBottom: '1rem', display: 'flex', gap: '0.5rem' }}>
+            <div style={{ marginBottom: '1rem', display: 'flex', gap: '0.5rem', flexDirection: 'column' }}>
+                <h3>Add a new habit</h3>
                 <input
                     type="text"
                     placeholder="New habit"
                     value={newHabit}
                     onChange={e => setNewHabit(e.target.value)}
+                    required
                 />
                 <button
                     onClick={() => {
@@ -25,6 +27,7 @@ const Habits: React.FC = () => {
                             setNewHabit('');
                         }
                     }}
+                    className='action-button button'
                 >
                     Add
                 </button>
@@ -37,6 +40,7 @@ const Habits: React.FC = () => {
                     const isDone = dates.includes(today);
                     return (
                         <li key={h._id} style={{ marginBottom: '0.5rem' }}>
+                            <h3>Habits list</h3>
                             <label style={{ display: 'flex', alignItems: 'center' }}>
                                 <input
                                     type="checkbox"

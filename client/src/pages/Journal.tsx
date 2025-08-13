@@ -12,6 +12,10 @@ const Journal: React.FC = () => {
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [entryToDelete, setEntryToDelete] = useState<Entry | null>(null);
 
+    const onSwitch = () => {
+        setViewMode(viewMode === 'list' ?'map' : 'list')
+    }
+
     // Filter entries by date range
     const filtered = useMemo(() => {
         return entries.filter(e => {
@@ -31,26 +35,28 @@ const Journal: React.FC = () => {
     };
 
     return (
-        <div style={{ padding: '1rem' }}>
-            <h1>Journal</h1>
+        <div className='main-container'>
 
-            {/* Controls */}
+            <div className='row'>
+                <h1>Journal</h1>
+                <button className='action-button button' onClick={onSwitch}>{viewMode === 'list' ?'Map' : 'List'} View</button>
+            </div>
+
+            {/* Filters */}
             <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1rem' }}>
                 <label>
-                    Start Date: <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
+                    Start Date: <input style={{ minHeight: '1rem' }} type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
                 </label>
                 <label>
-                    End Date: <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />
+                    End Date: <input style={{ minHeight: '1rem' }} type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />
                 </label>
-                <button onClick={() => setViewMode('list')} disabled={viewMode === 'list'}>List View</button>
-                <button onClick={() => setViewMode('map')} disabled={viewMode === 'map'}>Map View</button>
             </div>
 
             {/* Content */}
             {viewMode === 'map' ? (
                 <MapView markers={markers} />
             ) : filtered.length === 0 ? (
-                <p>No entries in this date range.</p>
+                <p>No entries available.</p>
             ) : (
                 <ul style={{ listStyle: 'none', padding: 0 }}>
                     {filtered.map((entry: Entry) => (
@@ -63,33 +69,30 @@ const Journal: React.FC = () => {
                                 alt="Journal entry"
                                 style={{ width: '100%', maxHeight: '300px', objectFit: 'cover', marginTop: '0.5rem', borderRadius: '8px' }}
                             />
-                            <p style={{ marginTop: '0.5rem' }}>
-                                Location: {entry.location.lat.toFixed(5)}, {entry.location.lng.toFixed(5)}
-                            </p>
-                            <button
-                                onClick={() => openConfirm(entry)}
-                                style={{ marginLeft: '1rem', color: 'red' }}
-                            >
-                                Delete
-                            </button>
+                            <div className='row'>
+                                <p style={{ marginTop: '0.5rem' }}><b>Location:</b> {entry.location.lat.toFixed(5)}, {entry.location.lng.toFixed(5)}</p>
+                                <button className='warning-button' onClick={() => openConfirm(entry)}>Delete</button>
+                            </div>
                         </li>
                     ))}
                 </ul>
             )}
+
             {/* Confirm Delete Modal */}
             {confirmOpen && entryToDelete && (
                 <div className="modal-overlay">
                     <div className="modal">
-                        <h3>Delete this entry?</h3>
-                        <p>This action cannot be undone.</p>
-                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
-                            <button onClick={() => setConfirmOpen(false)}>Cancel</button>
+                        <h3 style={{ marginBottom: '0.5rem' }}>Delete this entry?</h3>
+                        <p style={{ marginTop: 0 }}>This action cannot be undone.</p>
+                        
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1.5rem' }}>
+                            <button className='action-button button' onClick={() => setConfirmOpen(false)}>Cancel</button>
                             <button
                                 onClick={() => {
                                     deleteEntry(entryToDelete._id);
                                     setConfirmOpen(false);
                                 }}
-                                style={{ backgroundColor: 'red', color: 'white' }}
+                                className='warning-button'
                             >
                                 Delete
                             </button>
@@ -97,6 +100,7 @@ const Journal: React.FC = () => {
                     </div>
                 </div>
             )}
+            
         </div>
     );
 };

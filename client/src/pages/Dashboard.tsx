@@ -24,22 +24,20 @@ const Dashboard: React.FC = () => {
     ).length;
 
     return (
-        <div style={{ padding: '1rem' }}>
+        <div className='main-container'>
             <h1>TripTracker Dashboard</h1>
             
             {/* Map */}
-            <div id="map" style={{ width: '100%', height: '400px', backgroundColor: '#eee' }}>
+            <div id="map">
                 <MapView markers={markers} />
             </div>
 
             {/* Habit Summary */}
             <section>
                 <h2>Habits Summary</h2>
-                <div style={{ display: 'flex', gap: '1rem' }}>
-                    <div style={{ flex: 1, padding: '1rem', border: '1px solid #ccc', borderRadius: '8px', textAlign: 'center' }}>
-                        <h3>{completedCount} / {totalHabits}</h3>
-                        <p>habits completed today</p>
-                    </div>
+                <div style={{ flex: 1, padding: '1rem', border: '1px solid #ccc', borderRadius: '8px', textAlign: 'center' }}>
+                    <h3>{completedCount} / {totalHabits}</h3>
+                    <p>habits completed today</p>
                 </div>
             </section>
         </div>

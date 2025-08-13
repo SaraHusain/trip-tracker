@@ -5,10 +5,10 @@ const Fail: React.FC = () => {
     const navigate = useNavigate();
     
     return (
-        <div style={{ padding: '1rem' }}>
+        <div className='main-container'>
             <h1>Fail!</h1>
             <p>Entry was not added</p>
-            <button onClick={() => navigate('/')} style={{ marginTop: '1rem' }}>Return to Dashboard</button>
+            <button className='action-button button' onClick={() => navigate('/')}>Return to Dashboard</button>
         </div>
     );
 };

@@ -6,11 +6,11 @@ const Chart: React.FC = () => {
     const { habits } = useContext(HabitsContext);
 
     return (
-        <div style={{ padding: '1rem' }}>
+        <div className='main-container'>
             {/* Habits Streak Chart */}
             {habits.map(h => (
                 <div key={h._id} style={{ marginTop: '2rem' }}>
-                    <h3>{h.name} Streak (Last 30 days)</h3>
+                    <h3 style={{ textTransform: 'capitalize' }}>{h.name} Streak (Last 30 days)</h3>
                     <StreakChart habit={h} />
                 </div>
             ))}

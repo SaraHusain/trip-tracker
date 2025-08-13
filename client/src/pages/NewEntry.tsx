@@ -70,11 +70,14 @@ const NewEntry: React.FC = () => {
     useEffect(getLocation, []);
 
     return (
-        <div style={{ padding: '1rem' }}>
-            <h1>New Entry</h1>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
+        <div className='main-container'>
+            <div className='row'>
+                <h1>New Entry</h1>
+                <button className='action-button button' onClick={takePhoto}>Upload a Photo</button>
+            </div>
 
-            <button onClick={takePhoto}>Take Photo</button>
+            {error && <p className='error'>{error}</p>}
+
 
             {photoUri && (
                 <div>
@@ -82,17 +85,17 @@ const NewEntry: React.FC = () => {
                     <img
                         src={photoUri}
                         alt="Entry preview"
-                        style={{ maxWidth: '100%', marginTop: '1rem' }}
+                        className='image'
                     />
                 </div>
             )}
 
             {location && (
-                <p>Location: {location.lat.toFixed(5)}, {location.lng.toFixed(5)}</p>
+                <p><b>Location:</b> {location.lat.toFixed(5)}, {location.lng.toFixed(5)}</p>
             )}
 
             {photoFile && location && (
-                <button onClick={saveEntry} style={{ marginTop: '1rem' }}>Save Entry</button>
+                <button className='action-button button' onClick={saveEntry} style={{ marginTop: '1rem' }}>Save Entry</button>
             )}
         </div>
     );

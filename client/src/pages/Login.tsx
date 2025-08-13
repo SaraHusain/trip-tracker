@@ -18,6 +18,7 @@ const Login: React.FC = () => {
             const { token } = await res.json();
             localStorage.setItem('tt_token', token);
             nav('/');
+            window.location.reload();
         } catch (err) {
             console.error(err);
         }

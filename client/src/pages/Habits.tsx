@@ -11,7 +11,7 @@ const Habits: React.FC = () => {
             <h1>Habits</h1>
 
             {/* Add New Habit */}
-            <div style={{ marginBottom: '1rem', display: 'flex', gap: '0.5rem', flexDirection: 'column' }}>
+            <div className='habit-form'>
                 <h3>Add a new habit</h3>
                 <input
                     type="text"
@@ -34,7 +34,7 @@ const Habits: React.FC = () => {
             </div>
 
             {/* Habit List */}
-            <ul style={{ listStyle: 'none', padding: 0 }}>
+            <ul>
                 {habits.map(h => {
                     const dates = Array.isArray(h.completedDates) ? h.completedDates : [];
                     const isDone = dates.includes(today);

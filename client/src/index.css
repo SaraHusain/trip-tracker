@@ -13,6 +13,17 @@ code {
     monospace;
 }
 
+nav {
+  padding: 1rem;
+  border-bottom: 1px;
+  border-style: solid;
+  border-color: #ddd;
+}
+
+.nav-items {
+  margin-right: 1rem;
+}
+
 .color-empty { fill: #ebedf0; }
 .color-scale-1 { fill: #c6e48b; }
 .color-scale-2 { fill: #7bc96f; }
@@ -155,4 +166,38 @@ a:hover {
 
 .warning-button:hover {
   background-color: rgb(151, 24, 49);
+}
+
+.summary-container {
+  flex: 1;
+  padding: 1rem;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #ccc;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.habit-form {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+  gap: 0.5rem;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+.empty-div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.empty-image {
+  width: 40vw;
+  height: auto;
+  border-radius: 15px;
 }

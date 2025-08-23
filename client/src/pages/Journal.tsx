@@ -58,7 +58,7 @@ const Journal: React.FC = () => {
             ) : filtered.length === 0 ? (
                 <p>No entries available.</p>
             ) : (
-                <ul style={{ listStyle: 'none', padding: 0 }}>
+                <ul>
                     {filtered.map((entry: Entry) => (
                         <li key={entry._id} style={{ marginBottom: '1.5rem', borderBottom: '1px solid #ddd', paddingBottom: '1rem' }}>
                             <p style={{ margin: 0, fontSize: '0.9rem', color: '#555' }}>
@@ -68,6 +68,9 @@ const Journal: React.FC = () => {
                                 src={PHOTO_URL + entry.photoUri}
                                 alt="Journal entry"
                                 style={{ width: '100%', maxHeight: '300px', objectFit: 'cover', marginTop: '0.5rem', borderRadius: '8px' }}
+                                onError={(e) => {
+                                    (e.target as HTMLImageElement).src = 'https://blocks.astratic.com/img/general-img-landscape.png';
+                                }}
                             />
                             <div className='row'>
                                 <p style={{ marginTop: '0.5rem' }}><b>Location:</b> {entry.location.lat.toFixed(5)}, {entry.location.lng.toFixed(5)}</p>

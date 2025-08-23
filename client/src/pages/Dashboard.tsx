@@ -35,7 +35,7 @@ const Dashboard: React.FC = () => {
             {/* Habit Summary */}
             <section>
                 <h2>Habits Summary</h2>
-                <div style={{ flex: 1, padding: '1rem', border: '1px solid #ccc', borderRadius: '8px', textAlign: 'center' }}>
+                <div className='summary-container'>
                     <h3>{completedCount} / {totalHabits}</h3>
                     <p>habits completed today</p>
                 </div>

@@ -201,3 +201,23 @@ ul {
   height: auto;
   border-radius: 15px;
 }
+
+.secondary-button {
+  background-color: unset;
+  min-height: 2rem;
+  border-color: darkslategray;
+  color: darkslategray;
+  font-weight: bold;
+  font-size: medium;
+  line-height: 2.34rem;
+  border-width: 2px;
+  border-style: inset;
+  border-radius: 5px;
+  margin-top: 7px;
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+
+.secondary-button:hover {
+  background-color: rgb(232, 232, 232);
+}

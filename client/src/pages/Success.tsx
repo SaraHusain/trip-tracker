@@ -8,7 +8,10 @@ const Success: React.FC = () => {
         <div className='main-container'>
             <h1>Success!</h1>
             <p>Entry added successfully</p>
-            <button className='action-button button' onClick={() => navigate('/')}>Return to Dashboard</button>
+            <div className='row' style={{gap: '10px'}}>
+                <button className='secondary-button button' style={{width: '100%'}} onClick={() => navigate('/journal')}>Go to Journal</button>
+                <button className='action-button button' style={{width: '100%'}} onClick={() => navigate('/')}>Return to Dashboard</button>
+            </div>
         </div>
     );
 };

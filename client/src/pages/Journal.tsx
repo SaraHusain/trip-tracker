@@ -11,6 +11,9 @@ const Journal: React.FC = () => {
     const [endDate, setEndDate] = useState<string>('');
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [entryToDelete, setEntryToDelete] = useState<Entry | null>(null);
+    const [imageView, setImageView] = useState(false);
+    const [imageURI, setImageURI] = useState<string>('');
+
 
     const onSwitch = () => {
         setViewMode(viewMode === 'list' ?'map' : 'list')
@@ -64,14 +67,19 @@ const Journal: React.FC = () => {
                             <p style={{ margin: 0, fontSize: '0.9rem', color: '#555' }}>
                                 {new Date(entry.timestamp).toLocaleString()}
                             </p>
-                            <img
-                                src={PHOTO_URL + entry.photoUri}
-                                alt="Journal entry"
-                                style={{ width: '100%', maxHeight: '300px', objectFit: 'cover', marginTop: '0.5rem', borderRadius: '8px' }}
-                                onError={(e) => {
-                                    (e.target as HTMLImageElement).src = 'https://blocks.astratic.com/img/general-img-landscape.png';
-                                }}
-                            />
+                            <button 
+                                onClick={() => { setImageView(true); setImageURI(PHOTO_URL + entry.photoUri); }}
+                                style={{ padding: 0, border: 0, width: '100%', marginTop: '0.5rem', backgroundColor: 'unset' }}    
+                            >
+                                <img
+                                    src={PHOTO_URL + entry.photoUri}
+                                    alt="Journal entry"
+                                    style={{ width: '100%', maxHeight: '300px', objectFit: 'cover', borderRadius: '8px' }}
+                                    onError={(e) => {
+                                        (e.target as HTMLImageElement).src = 'https://blocks.astratic.com/img/general-img-landscape.png';
+                                    }}
+                                />
+                            </button>
                             <div className='row'>
                                 <p style={{ marginTop: '0.5rem' }}><b>Location:</b> {entry.location.lat.toFixed(5)}, {entry.location.lng.toFixed(5)}</p>
                                 <button className='warning-button' onClick={() => openConfirm(entry)}>Delete</button>
@@ -103,6 +111,22 @@ const Journal: React.FC = () => {
                     </div>
                 </div>
             )}
+
+            {/* Image View */}
+            {imageView && 
+                <button onClick={() => { setImageView(false); setImageURI(''); }} className='modal-overlay'>
+                    <div className='modal'>
+                        <img
+                            src={imageURI}
+                            alt="Journal entry"
+                            style={{ width: '90vh', maxHeight: '90vh', objectFit: 'cover', borderRadius: '8px'}}
+                            onError={(e) => {
+                                (e.target as HTMLImageElement).src = 'https://blocks.astratic.com/img/general-img-landscape.png';
+                            }}
+                        />
+                    </div>
+                </button>
+            }
             
         </div>
     );

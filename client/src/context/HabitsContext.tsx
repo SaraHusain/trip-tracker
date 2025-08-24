@@ -10,12 +10,14 @@ interface HabitsContextType {
     habits: Habit[];
     addHabit: (name: string) => void;
     toggleHabit: (_id: string, date: string) => void;
+    deleteHabit: (id: string) => Promise<void>;
 }
 
 export const HabitsContext = createContext<HabitsContextType>({
     habits: [],
     addHabit: () => {},
     toggleHabit: () => {},
+    deleteHabit: async () => {}
 });
 
 const API_URL = process.env.REACT_APP_API_URL!;
@@ -89,8 +91,20 @@ export const HabitsProvider: React.FC<React.PropsWithChildren<{}>> = ({ children
         }
     };
 
+    const deleteHabit = async (id: string) => {
+		const res = await fetch(`${API_URL}/habits/${id}`, {
+			method: 'DELETE',
+			headers: { Authorization: `Bearer ${token}` }
+		});
+		if (res.ok) {
+			setHabits(prev => prev.filter(e => e._id !== id));
+		} else {
+			console.error('Delete failed', await res.json());
+		}
+	};
+
     return (
-        <HabitsContext.Provider value={{ habits, addHabit, toggleHabit }}>
+        <HabitsContext.Provider value={{ habits, addHabit, toggleHabit, deleteHabit }}>
             {children}
         </HabitsContext.Provider>
     );

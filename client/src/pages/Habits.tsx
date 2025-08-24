@@ -1,10 +1,17 @@
 import React, { useState, useContext } from 'react';
-import { HabitsContext } from '../context/HabitsContext';
+import { HabitsContext, Habit } from '../context/HabitsContext';
 
 const Habits: React.FC = () => {
-    const { habits, addHabit, toggleHabit } = useContext(HabitsContext);
+    const { habits, addHabit, toggleHabit, deleteHabit } = useContext(HabitsContext);
     const [newHabit, setNewHabit] = useState('');
+    const [confirmOpen, setConfirmOpen] = useState(false);
+    const [habitToDelete, setHabitToDelete] = useState<Habit | null>(null);
     const today = new Date().toISOString().split('T')[0];
+
+    const openConfirm = (habit: Habit) => {
+        setHabitToDelete(habit);
+        setConfirmOpen(true);
+    };
 
     return (
         <div className='main-container'>
@@ -41,18 +48,44 @@ const Habits: React.FC = () => {
                     return (
                         <li key={h._id} style={{ marginBottom: '0.5rem' }}>
                             <h3>Habits list</h3>
-                            <label style={{ display: 'flex', alignItems: 'center' }}>
-                                <input
-                                    type="checkbox"
-                                    checked={isDone}
-                                    onChange={() => toggleHabit(h._id, today)}
-                                />
-                                <span style={{ marginLeft: '0.5rem' }}>{h.name}</span>
-                            </label>
+                            <div className='row'>
+                                <label style={{ display: 'flex', alignItems: 'center' }}>
+                                    <input
+                                        type="checkbox"
+                                        checked={isDone}
+                                        onChange={() => toggleHabit(h._id, today)}
+                                    />
+                                    <span style={{ marginLeft: '0.5rem' }}>{h.name}</span>
+                                </label>
+                                <button className='warning-button' onClick={() => openConfirm(h)}>Delete</button>
+                            </div>
                         </li>
                     )})
                 }
             </ul>
+
+            {/* Confirm Delete Modal */}
+            {confirmOpen && habitToDelete && (
+                <div className="modal-overlay">
+                    <div className="modal">
+                        <h3 style={{ marginBottom: '0.5rem' }}>Delete this habit?</h3>
+                        <p style={{ marginTop: 0 }}>This action cannot be undone.</p>
+                        
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1.5rem' }}>
+                            <button className='action-button button' onClick={() => setConfirmOpen(false)}>Cancel</button>
+                            <button
+                                onClick={() => {
+                                    deleteHabit(habitToDelete._id);
+                                    setConfirmOpen(false);
+                                }}
+                                className='warning-button'
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

@@ -41,3 +41,19 @@ export const toggleHabitDate = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Server Error' });
     }
 };
+
+// Delete a habit
+export const deleteHabit = async (req: Request, res: Response) => {
+  try {
+        const { id } = req.params;
+        // Only delete if it belongs to this user
+        const result = await Habit.deleteOne({ _id: id, userId: req.user?.id });
+        if (result.deletedCount === 0) {
+            return res.status(404).json({ message: 'Not found' });
+        }
+        res.status(204).end();
+    } catch (err) {
+        console.error('Error deleting habit:', err);
+        res.status(500).json({ message: 'Server Error' });
+    }
+};

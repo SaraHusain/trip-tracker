@@ -9,6 +9,7 @@ const Empty: React.FC = () => {
             <img
                 src='/empty.jpg'
                 className='empty-image'
+                alt=''
             />
             <div style={{textAlign: 'center'}}>
                 <h3>No habits tracked yet</h3>
